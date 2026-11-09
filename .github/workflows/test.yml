@@ -6,6 +6,7 @@ on:
     branches: [ main ]
 jobs:
   test:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://user:password@localhost:5432/myappdb
@@ -41,12 +42,20 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
           playwright install
-      - name: Run tests
+      - name: Run unit tests
         run: |
           source venv/bin/activate
-          pytest tests/unit/ --cov=app
-          pytest tests/integration/
-          pytest tests/e2e/
+          timeout 5m pytest -vv tests/unit/ --cov=app
+
+      - name: Run integration tests
+        run: |
+          source venv/bin/activate
+          timeout 5m pytest -vv tests/integration/
+
+      - name: Run E2E tests
+        run: |
+          source venv/bin/activate
+          timeout 10m pytest -vv tests/e2e/
   security:
     needs: test
     runs-on: ubuntu-latest
