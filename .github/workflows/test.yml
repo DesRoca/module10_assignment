@@ -55,7 +55,7 @@ jobs:
       - name: Run E2E tests
         run: |
           source venv/bin/activate
-          timeout 10m pytest -vv tests/e2e/
+          timeout 2m pytest -vv -s --setup-show --tb=short tests/e2e/
   security:
     needs: test
     runs-on: ubuntu-latest
